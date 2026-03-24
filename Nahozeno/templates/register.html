@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrace | Rybáři.cz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .auth-container { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #f0f2f0; }
+        .auth-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        .auth-card h2 { color: #1a301a; margin-bottom: 25px; }
+        .auth-card input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        .auth-card button { width: 100%; padding: 14px; background: #4CAF50; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        .auth-card button:hover { background: #45a049; }
+    </style>
+</head>
+<body class="auth-container">
+    <div class="auth-card">
+        <a href="/" style="text-decoration: none; color: #1a301a; font-weight: bold; font-size: 1.5rem;">RYBÁŘI<span>.cz</span></a>
+        <h2>Nová registrace</h2>
+        
+        <form method="POST">
+            <input type="text" name="username" placeholder="Zvolte si jméno" required autofocus>
+            <input type="password" name="password" placeholder="Zvolte si heslo" required>
+            <button type="submit">ZAREGISTROVAT SE</button>
+        </form>
+        
+        <p style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+            Už máte účet? <a href="/login" style="color: #1a301a; font-weight: bold; text-decoration: none;">Přihlaste se</a>
+        </p>
+    </div>
+</body>
+</html>

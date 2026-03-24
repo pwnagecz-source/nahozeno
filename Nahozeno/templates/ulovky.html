@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie úlovků | Nahozeno.cz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 30px; }
+        .catch-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .catch-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .catch-img { width: 100%; height: 200px; object-fit: cover; }
+        .catch-info { padding: 15px; }
+        .catch-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); margin: 0; }
+        .catch-meta { font-size: 0.85rem; color: #777; margin-top: 5px; }
+        .catch-stats { display: flex; justify-content: space-between; margin-top: 15px; padding-top: 10px; border-top: 1px solid #eee; font-size: 0.9rem; }
+        
+        .upload-section { background: var(--primary); color: white; padding: 30px; border-radius: 15px; margin-bottom: 40px; }
+        .upload-form { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .upload-form input, .upload-form button { padding: 12px; border-radius: 8px; border: none; }
+        .upload-form button { background: #ffd700; color: #000; font-weight: bold; cursor: pointer; }
+        .upload-form input[name="ryba"] { grid-column: span 1; }
+        
+        @media (max-width: 768px) { .upload-form { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">NAHOZENO<span>.cz</span></a>
+            <div class="nav-links">
+                <a href="/">Magazín</a>
+                <a href="/ulovky" style="color: white; font-weight: bold;">Galerie úlovků</a>
+                <a href="/reviry">Atlas revírů</a>
+                <a href="/kalendar">Kalendář akcí</a>
+                <div class="user-zone">
+                    {% if session.get('prihlasen') %}
+                        <span class="user-name">Ahoj, {{ session['uzivatel'] }}</span>
+                        <a href="/logout" class="logout-link">Odhlásit</a>
+                    {% else %}
+                        <a href="/login">Přihlásit</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 40px;">
+        <header style="text-align: center; margin-bottom: 40px;">
+            <h1 style="font-size: 2.5rem; color: var(--primary);">Galerie vašich úlovků</h1>
+            <p style="color: #666;">Pochlubte se svými úspěchy u vody!</p>
+        </header>
+
+        {% if session.get('prihlasen') %}
+        <section class="upload-section">
+            <h3 style="margin: 0;">Zapsat nový úlovek 🎣</h3>
+            <form class="upload-form" method="POST">
+                <input type="text" name="ryba" placeholder="Druh ryby (např. Kapr obecný)" required>
+                <input type="text" name="vaha" placeholder="Váha / Délka (např. 12kg / 85cm)">
+                <input type="text" name="revir" placeholder="Název revíru">
+                <input type="text" name="foto" placeholder="Název souboru fotky (sumec.jpg)">
+                <button type="submit" style="grid-column: span 3;">ZVEŘEJNIT ÚLOVEK</button>
+            </form>
+        </section>
+        {% else %}
+        <div style="background: #fff; padding: 20px; border-radius: 12px; text-align: center; border: 2px dashed #ccc; margin-bottom: 40px;">
+            <p>Pro přidání vlastního úlovku se prosím <a href="/login" style="color: var(--accent); font-weight: bold;">přihlaste</a>.</p>
+        </div>
+        {% endif %}
+
+        <div class="gallery-grid">
+            {% for ulovek in ulovky %}
+            <div class="catch-card">
+                <img src="{{ url_for('static', filename='img/' + ulovek.foto) }}" class="catch-img" alt="{{ ulovek.ryba }}">
+                <div class="catch-info">
+                    <p class="catch-title">{{ ulovek.ryba }}</p>
+                    <div class="catch-meta">
+                        👤 {{ ulovek.autor }} | 📅 {{ ulovek.datum }}
+                    </div>
+                    <div class="catch-stats">
+                        <span>⚖️ {{ ulovek.vaha }}</span>
+                        <span>📍 {{ ulovek.revir }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if not ulovky %}
+            <p style="grid-column: 1/-1; text-align: center; color: #999; padding: 40px;">Zatím zde nejsou žádné úlovky. Buďte první!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <footer style="margin-top: 80px;">
+        <div class="container">
+            <p>&copy; 2026 Nahozeno.cz - Petrův zdar!</p>
+        </div>
+    </footer>
+</body>
+</html>

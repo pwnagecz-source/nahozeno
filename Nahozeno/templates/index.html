@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ obsah.nastaveni.nazev }} | Portál pro rybáře</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="logo">NAHOZENO<span>.cz</span></a>
+            <div class="nav-links">
+                <a href="/">Magazín</a>
+                <a href="/ulovky">Galerie úlovků</a>
+                <a href="/reviry">Atlas revírů</a>
+                <a href="/kalendar">Kalendář akcí</a>
+                
+                <div class="user-zone">
+                    {% if session.get('prihlasen') %}
+                        <span class="user-name">Ahoj, {{ session['uzivatel'] }}</span>
+                        {% if session.get('role') == 'admin' %}
+                            <a href="/admin" class="admin-link">Admin</a>
+                        {% endif %}
+                        <a href="/logout" class="logout-link">Odhlásit</a>
+                    {% else %}
+                        <a href="/login">Přihlásit</a>
+                        <a href="/register" class="btn-reg">Registrace</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>{{ obsah.nastaveni.slogan }}</h1>
+            <p>Aktuální zprávy od vody, recenze výbavy a nejlepší revíry v ČR.</p>
+        </div>
+        <div class="vlna-container">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,0c150,100,450,0,600,0s450,100,600,0V120H0Z" fill="rgba(255, 255, 255, 0.1)"></path>
+                <path d="M0,30c150,80,450,0,600,0s450,80,600,0V120H0Z" fill="#f4f7f4"></path>
+            </svg>
+        </div>
+    </header>
+
+    <main class="container layout">
+        <section class="main-card">
+            <div class="card-tag">DOPORUČUJEME</div>
+            <h2>{{ obsah.hlavni_clanek.nazev }}</h2>
+            <p class="article-text">{{ obsah.hlavni_clanek.text }}</p>
+            <div class="img-wrapper">
+                <img src="{{ url_for('static', filename='img/' + obsah.hlavni_clanek.foto) }}" class="featured-img" alt="Hlavní článek">
+            </div>
+        </section>
+
+        <aside class="sidebar">
+            <div class="widget meteo-widget">
+                <h3>POČASÍ U VODY</h3>
+                <div class="meteo-grid">
+                    <div class="meteo-item">
+                        <span class="label">Teplota</span>
+                        <span class="value">{{ obsah.pocasi.teplota }}</span>
+                    </div>
+                    <div class="meteo-item">
+                        <span class="label">Tlak</span>
+                        <span class="value">{{ obsah.pocasi.tlak }}</span>
+                    </div>
+                    <div class="meteo-item">
+                        <span class="label">Stav</span>
+                        <span class="value">{{ obsah.pocasi.stav }}</span>
+                    </div>
+                </div>
+                <div class="activity-bar">
+                    <div class="activity-label">Aktivita ryb: <strong>{{ obsah.pocasi.aktivita }}</strong></div>
+                    <div class="progress-bg">
+                        <div class="progress-fill" style="width: {{ obsah.pocasi.aktivita }}"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="widget">
+                <h3>NEJNOVĚJŠÍ ZPRÁVY</h3>
+                <div class="news-list">
+                    {% for polozka in obsah.novinky %}
+                    <a href="{{ url_for('detail_clanku', index=loop.index0) }}" class="news-card">
+                        <div class="news-thumb">
+                            <img src="{{ url_for('static', filename='img/' + polozka.foto) }}">
+                        </div>
+                        <div class="news-content">
+                            <span class="news-cat">{{ polozka.kategorie }}</span>
+                            <h4>{{ polozka.titulek }}</h4>
+                            <span class="news-date">{{ polozka.cas }}</span>
+                        </div>
+                    </a>
+                    {% endfor %}
+                    {% if not obsah.novinky %}
+                        <p style="font-size: 0.8rem; color: #999;">Zatím žádné nové zprávy.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 {{ obsah.nastaveni.nazev }} - Petrův zdar!</p>
+        </div>
+    </footer>
+</body>
+</html>
